@@ -2,6 +2,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import dynamic from "next/dynamic";
@@ -9,6 +10,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff, ShieldCheck } from "lucide-react";
+
+import { handleLogin } from "../actions";
 
 // Import ReCAPTCHA secara dinamis agar aman dari isu SSR / Hydration
 const ReCAPTCHA = dynamic(() => import("react-google-recaptcha"), {
@@ -31,6 +34,10 @@ export default function LoginPage() {
   const [mounted, setMounted] = useState(false);
   const [captchaToken, setCaptchaToken] = useState(null);
   const [captchaError, setCaptchaError] = useState("");
+
+  const [serverError, setServerError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     setMounted(true);
@@ -55,7 +62,7 @@ export default function LoginPage() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     let newErrors = { username: "", password: "" };
@@ -78,6 +85,32 @@ export default function LoginPage() {
     if (!captchaToken) {
       setCaptchaError("Silakan centang verifikasi reCAPTCHA terlebih dahulu.");
       return;
+    }
+
+    setIsLoading(true);
+    setServerError("");
+
+    try {
+      const dataToSend = new FormData();
+      dataToSend.append("username", formData.username);
+      dataToSend.append("password", formData.password);
+      if (formData.rememberMe) {
+        dataToSend.append("rememberMe", "on");
+      }
+
+      const result = await handleLogin(null, dataToSend);
+
+      if (!result.success) {
+        setServerError(result.message || "Gagal masuk ke sistem. ");
+        setIsLoading(false);
+      } else {
+        router.push(result.redirectUrl);
+        router.refresh();
+      }
+    } catch (err) {
+      console.error("Login submmision error", err);
+      setServerError("Terjadi kesalahan pada koneksi ke server. ");
+      setIsLoading(false);
     }
 
     console.log("Login Payload:", formData);
@@ -104,17 +137,23 @@ export default function LoginPage() {
           <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 mb-1">
             KAMPUNG PALAHANAENG
           </h1>
-          <p className="text-xs font-semibold tracking-wider uppercase mb-2">
+          <p className="text-xs font-semibold tracking-wider uppercase">
             Kecamatan Tabukan Tengah, Kabupaten Kepulauan Sangihe
           </p>
 
           {/* Garis Pembatas Bergradasi */}
-          <div className="w-36 h-[5px] bg-gradient my-2 mx-auto border rounded" />
+          <div className="w-36 h-[5px] bg-gradient mt-2 mb-3 mx-auto border rounded" />
 
-          <p className="text-slate-500 text-sm font-medium mt-1">
-            Masuk ke sistem administrasi dan layanan kampung
+          <p className="text-slate-500 text-sm font-medium mt-1 mb-5">
+            Masuk Ke Sistem Administrasi Dan Layanan Kampung
           </p>
         </div>
+
+        {serverError && (
+          <div className="mx-auto my-2 p-3 flex flex-col justify-center items-center text-xs text-red-600 bg-red-50 w-full max-w-md border border-red-200 rounded-xl text-center font-medium">
+            {serverError}
+          </div>
+        )}
 
         {/* Tengah: Form */}
         <div className="my-auto py-8 w-full max-w-md mx-auto">
