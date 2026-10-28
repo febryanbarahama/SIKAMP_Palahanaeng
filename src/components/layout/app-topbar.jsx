@@ -32,7 +32,7 @@ export default function AppTopbar({
     .toUpperCase();
 
   return (
-    <header className="h-20 bg-surface border-b border-border px-8 flex items-center justify-between sticky top-0 z-20 shadow-xs">
+    <header className="h-20 bg-surface border-b border-border px-8 flex py-4 items-center justify-between sticky top-0 z-20 shadow-xs">
       <div className="flex items-center gap-4">
         {/* Tombol Collapse / Buka Sidebar */}
         <button
