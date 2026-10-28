@@ -13,10 +13,11 @@ export default function AppTopbar({
   title,
   description,
   onToggleSidebar,
-  userName = "Super Admin",
-  userRole = "Administrator",
+  userName,
+  userRole,
   moduleLink = "/",
   moduleLabel = "Ke Halaman Modul",
+  onLogout,
 }) {
   const handleLogout = async () => {
     document.cookie = "sid_session=; Max-Age=0; path=/;";
@@ -114,7 +115,7 @@ export default function AppTopbar({
             <DropdownMenuSeparator />
             {/* Tombol Logout dengan Teks Danger dan Hover Latar Merah Lembut */}
             <DropdownMenuItem
-              onClick={handleLogout}
+              onClick={onLogout}
               className="text-danger hover:text-danger focus:text-danger hover:bg-red-100 focus:bg-red-100 cursor-pointer flex items-center gap-2 text-xs font-medium transition-colors rounded-md p-2.5"
             >
               <LogOut className="w-4 h-4" />

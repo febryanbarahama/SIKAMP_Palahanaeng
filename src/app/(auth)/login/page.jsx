@@ -298,7 +298,7 @@ export default function LoginPage() {
       >
         {/* Gambar Background Kampung */}
         <Image
-          src="/bg-kampung.png"
+          src="/bg-login.png"
           alt="Pemandangan Kampung Palahanaeng"
           fill
           className="object-cover object-center absolute inset-0 z-0"
@@ -306,7 +306,7 @@ export default function LoginPage() {
         />
 
         {/* Gradasi Biru Gelap ke Terang (Dark Blue to Lighter Blue Gradient) */}
-        <div className="absolute inset-0 bg-gradient-to-t from-blue-950/95 via-blue-900/65 to-blue-600/35 z-1" />
+        <div className="absolute inset-0 bg-gradient-to-t from-blue-950/60 via-blue-900/40 to-blue-600/25 z-1" />
         <div className="absolute inset-0 bg-blue-950/30 backdrop-brightness-105 z-1" />
 
         {/* Konten Atas */}
@@ -317,7 +317,7 @@ export default function LoginPage() {
 
         {/* Konten Tengah */}
         <div className="relative z-10 max-w-lg my-auto space-y-4">
-          <div className="inline-block px-3 py-1 rounded-full bg-transparant backdrop-blur text-blue-100 text-xs font-semibold tracking-wide uppercase shadow-lg">
+          <div className="inline-block rounded-full border border-white/25 bg-white/[0.06] px-8 py-3 text-xs font-semibold uppercase tracking-wide text-blue-50 shadow-[0_4px_20px_rgba(0,0,0,0.08)] backdrop-blur-xl backdrop-saturate-150">
             Modul Pemerintahan & Layanan
           </div>
           <h2 className="text-4xl font-extrabold tracking-tight leading-tight drop-shadow-md">

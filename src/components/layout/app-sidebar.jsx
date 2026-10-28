@@ -7,8 +7,8 @@ export default function AppSidebar({
   isCollapsed,
   onToggle,
   navItems = [],
-  userRole = "Operator",
-  userName = "Administrator",
+  userRole,
+  userName,
 }) {
   const pathname = usePathname();
 

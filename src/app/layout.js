@@ -9,8 +9,9 @@ const outfit = Outfit({
 });
 
 export const metadata = {
-  title: "SID Kampung Palahanaeng",
-  description: "Sistem Informasi Desa & Administrasi Kampung Palahanaeng",
+  title: "Panel Admin | Dashboard",
+  description:
+    "Sistem Informasi Kampung Palahanaeng | Manajemen Pengguna & Monitoring Sistem",
 };
 
 export default function RootLayout({ children }) {

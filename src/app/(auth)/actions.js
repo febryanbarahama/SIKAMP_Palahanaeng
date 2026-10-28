@@ -3,6 +3,7 @@
 import { cookies } from "next/headers";
 import { createClient } from "@supabase/supabase-js";
 import bcrypt from "bcrypt";
+import { redirect } from "next/navigation";
 
 // Inisialisasi client Supabase khusus server menggunakan Service Role Key (Bypass RLS)
 const supabase = createClient(
@@ -106,4 +107,11 @@ export async function handleLogin(prevState, formData) {
     console.error("Login Error : ", err);
     return { success: false, message: "Telah terjadi kesalahan di server." };
   }
+}
+
+// 2. Fungsi Logout baru yang ditambahkan di file yang sama
+export async function handleLogout() {
+  const cookieStore = await cookies();
+  cookieStore.delete("sid_session");
+  redirect("/login"); // Sesuaikan dengan route halaman login kamu
 }

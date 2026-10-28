@@ -1,45 +1,34 @@
-"use client";
+import { cookies } from "next/headers";
+import { connection } from "next/server";
+import SysadminShell from "@/components/sysadmin/sysadmin-shell";
 
-import { useState } from "react";
-import { LayoutDashboard, Users, Activity, FileText } from "lucide-react";
-import AppSidebar from "@/components/layout/app-sidebar";
-import AppTopbar from "@/components/layout/app-topbar";
+export const instant = false;
 
-const sysadminNav = [
-  { name: "Dashboard", href: "/sysadmin", icon: LayoutDashboard },
-  { name: "Manajemen Pengguna", href: "/sysadmin/users", icon: Users },
-  { name: "Monitoring System", href: "/sysadmin/monitoring", icon: Activity },
-  { name: "Log Aktivitas", href: "/sysadmin/logs", icon: FileText },
-];
+export default async function SysadminLayout({ children }) {
+  await connection();
 
-export default function SysadminLayout({ children }) {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const cookieStore = await cookies();
+  const sessionCookie = cookieStore.get("sid_session")?.value;
 
-  const toggleSidebar = () => setIsCollapsed(!isCollapsed);
+  let adminData = {
+    username: "Super Admin",
+    roleName: "Sysadmin",
+  };
 
-  return (
-    <div className="min-h-screen bg-background flex overflow-hidden">
-      <AppSidebar
-        isCollapsed={isCollapsed}
-        onToggle={toggleSidebar}
-        navItems={sysadminNav}
-        userName="Super Admin"
-        userRole="Super Admin"
-      />
+  if (sessionCookie) {
+    try {
+      // Parsing data JSON yang disimpan dari action.js
+      const parsedSession = JSON.parse(sessionCookie);
+      if (parsedSession) {
+        adminData = {
+          username: parsedSession.username || "Super Admin",
+          roleName: parsedSession.namaRole || "Sysadmin",
+        };
+      }
+    } catch (e) {
+      console.error("Gagal parsing session cookie:", e);
+    }
+  }
 
-      <div className="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto">
-        <AppTopbar
-          title="Panel Admin"
-          description="Pusat kendali akun pengguna dan pemantauan infrastruktur sistem"
-          onToggleSidebar={toggleSidebar}
-          userName="Super Admin"
-          userRole="Super Admin"
-          moduleLink="/"
-          moduleLabel="Ke Halaman Modul"
-        />
-
-        <main className="flex-1 p-8">{children}</main>
-      </div>
-    </div>
-  );
+  return <SysadminShell initialAdmin={adminData}>{children}</SysadminShell>;
 }
