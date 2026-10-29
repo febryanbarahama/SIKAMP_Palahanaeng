@@ -15,8 +15,10 @@ export async function getActiveUsername() {
   return "Administrator";
 }
 
-export async function getDashboardData() {
-  let stats = {
+// Fungsi reusable untuk mengambil seluruh data pengguna dan statistik terkait
+export async function getUsersManagementData() {
+  let result = {
+    usersList: [],
     totalUsers: 0,
     activeUsers: 0,
     inactiveUsers: 0,
@@ -28,25 +30,27 @@ export async function getDashboardData() {
   try {
     const { data: users, error } = await supabaseAdmin
       .from("users")
-      .select("id, username, status, last_login, roles(nama_role)");
+      .select("id, username, status, created_at, last_login, roles(nama_role)")
+      .order("created_at", { ascending: false });
 
     if (!error && users) {
-      stats.totalUsers = users.length;
-      stats.activeUsers = users.filter((u) => u.status === "aktif").length;
-      stats.inactiveUsers = users.filter((u) => u.status !== "aktif").length;
+      result.usersList = users;
+      result.totalUsers = users.length;
+      result.activeUsers = users.filter((u) => u.status === "aktif").length;
+      result.inactiveUsers = users.filter((u) => u.status !== "aktif").length;
 
       users.forEach((u) => {
         const roleName = u.roles?.nama_role || "Tanpa Role";
-        stats.roleDistribution[roleName] =
-          (stats.roleDistribution[roleName] || 0) + 1;
+        result.roleDistribution[roleName] =
+          (result.roleDistribution[roleName] || 0) + 1;
       });
 
-      stats.recentLogins = users
+      result.recentLogins = users
         .filter((u) => u.last_login)
         .sort((a, b) => new Date(b.last_login) - new Date(a.last_login))
         .slice(0, 5);
 
-      stats.activityLogs = users.slice(0, 5).map((u) => ({
+      result.activityLogs = users.slice(0, 5).map((u) => ({
         id: u.id,
         title: `Aktivitas akun: ${u.username}`,
         desc: `Status saat ini ${u.status === "aktif" ? "Aktif" : "Nonaktif"}`,
@@ -61,8 +65,21 @@ export async function getDashboardData() {
       console.error("Error Supabase Query:", error.message);
     }
   } catch (err) {
-    console.error("Gagal mengambil data dashboard dari Supabase:", err);
+    console.error("Gagal mengambil data dari Supabase:", err);
   }
 
-  return stats;
+  return result;
+}
+
+// Pertahankan fungsi getDashboardData jika ingin tetap aman untuk dashboard
+export async function getDashboardData() {
+  const data = await getUsersManagementData();
+  return {
+    totalUsers: data.totalUsers,
+    activeUsers: data.activeUsers,
+    inactiveUsers: data.inactiveUsers,
+    roleDistribution: data.roleDistribution,
+    recentLogins: data.recentLogins,
+    activityLogs: data.activityLogs,
+  };
 }

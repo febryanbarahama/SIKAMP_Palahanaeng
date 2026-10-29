@@ -8,7 +8,11 @@ import { handleLogout } from "@/app/(auth)/actions"; // Sesuaikan jalur impor ac
 
 const sysadminNav = [
   { name: "Dashboard", href: "/sysadmin", icon: LayoutDashboard },
-  { name: "Manajemen Pengguna", href: "/sysadmin/users", icon: Users },
+  {
+    name: "Manajemen Pengguna",
+    href: "/sysadmin/manajemen-users",
+    icon: Users,
+  },
   { name: "Monitoring System", href: "/sysadmin/monitoring", icon: Activity },
   { name: "Log Aktivitas", href: "/sysadmin/logs", icon: FileText },
 ];
