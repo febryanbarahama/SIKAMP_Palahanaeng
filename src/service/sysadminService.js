@@ -116,6 +116,62 @@ export async function createNewUsersAccount({
   }
 }
 
+export async function updateUserStatus(userIds, newStatus) {
+  try {
+    const ids = Array.isArray(userIds) ? userIds : [userIds];
+
+    const { data, error } = await supabaseAdmin
+      .from("users")
+      .update({ status: newStatus })
+      .in("id", ids)
+      .select();
+
+    if (error) throw new Error(error.message);
+    return { success: true, data };
+  } catch (error) {
+    console.error("Gagal mengubah status akun:", error.message);
+    return { success: false, error: error.message };
+  }
+}
+
+export async function resetUserPassword(userId, newPassword) {
+  try {
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+
+    const { data, error } = await supabaseAdmin
+      .from("users")
+      .update({ password: hashedPassword })
+      .eq("id", userId)
+      .select()
+      .single();
+
+    if (error) throw new Error(error.message);
+    return { success: true, data };
+  } catch (error) {
+    console.error("Gagal mereset password:", error.message);
+    return { success: false, error: error.message };
+  }
+}
+
+export async function deleteUsersAccount(userIds) {
+  try {
+    const ids = Array.isArray(userIds) ? userIds : [userIds];
+
+    const { data, error } = await supabaseAdmin
+      .from("users")
+      .delete()
+      .in("id", ids)
+      .select();
+
+    if (error) throw new Error(error.message);
+    return { success: true, data };
+  } catch (error) {
+    console.error("Gagal menghapus akun:", error.message);
+    return { success: false, error: error.message };
+  }
+}
+
 // Pertahankan fungsi getDashboardData jika ingin tetap aman untuk dashboard
 export async function getDashboardData() {
   const data = await getUsersManagementData();
