@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import { supabaseAdmin } from "@/lib/supabase";
+import bcrypt from "bcrypt";
 
 export async function getActiveUsername() {
   try {
@@ -69,6 +70,50 @@ export async function getUsersManagementData() {
   }
 
   return result;
+}
+
+export async function createNewUsersAccount({
+  username,
+  password,
+  role, // Menerima angka ID dari form (misal: "1", "2", "3", "4", "5")
+  status,
+}) {
+  try {
+    // Konversi nilai 'role' menjadi integer
+    const roleId = parseInt(role, 10);
+
+    if (isNaN(roleId)) {
+      throw new Error(`Role ID tidak valid atau tidak dikenali: "${role}"`);
+    }
+
+    // Enkripsi password dengan bcrypt
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    // Simpan ke tabel users dengan role_id integer yang pasti
+    const { data, error } = await supabaseAdmin
+      .from("users")
+      .insert([
+        {
+          username: username.trim().toLowerCase(),
+          password: hashedPassword,
+          role_id: roleId, // Menggunakan ID angka yang dipilih pengguna
+          status: status,
+          created_at: new Date().toISOString(),
+        },
+      ])
+      .select()
+      .single();
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    return { success: true, data };
+  } catch (error) {
+    console.error("Gagal membuat akun : ", error.message);
+    return { success: false, error: error.message };
+  }
 }
 
 // Pertahankan fungsi getDashboardData jika ingin tetap aman untuk dashboard
