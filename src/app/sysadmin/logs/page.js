@@ -7,6 +7,27 @@ import LogStatCards from "@/components/sysadmin/logs/LogStatCards";
 import LogFilterToolbar from "@/components/sysadmin/logs/LogFilterToolbar";
 import LogsTable from "@/components/sysadmin/logs/LogsTable";
 
+function LogsLoadingSkeleton() {
+  return (
+    <div className="space-y-6 animate-pulse">
+      {/* 1. Header Polos */}
+      <div className="flex justify-between items-center">
+        <div className="h-[100px] w-full bg-slate-200 rounded-lg"></div>
+      </div>
+
+      {/* 2. Grid 4 Kartu Statistik Polos */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="h-28 bg-slate-200 rounded-xl"></div>
+        ))}
+      </div>
+
+      {/* 3. Kotak Utama Tabel Polos */}
+      <div className="h-96 bg-slate-200 rounded-xl"></div>
+    </div>
+  );
+}
+
 export default function AuditLogsPage() {
   const [loading, setLoading] = useState(true);
   const [logs, setLogs] = useState([]);
@@ -98,6 +119,11 @@ export default function AuditLogsPage() {
     link.click();
     document.body.removeChild(link);
   };
+
+  // Tampilkan Skeleton polos saat data pertama kali dimuat
+  if (loading && logs.length === 0) {
+    return <LogsLoadingSkeleton />;
+  }
 
   return (
     <div className="space-y-6">

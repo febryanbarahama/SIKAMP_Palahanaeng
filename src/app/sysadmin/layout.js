@@ -4,6 +4,12 @@ import SysadminShell from "@/components/sysadmin/sysadmin-shell";
 
 export const instant = false;
 
+export const metadata = {
+  title: "Dashboard | SIKAMP Palahanaeng",
+  description:
+    "Sistem Informasi Kampung Palahanaeng | Manajemen Pengguna & Monitoring Sistem",
+};
+
 export default async function SysadminLayout({ children }) {
   await connection();
 

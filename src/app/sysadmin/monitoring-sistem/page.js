@@ -8,6 +8,25 @@ import LatencyChart from "@/components/sysadmin/monitoring/LatencyChart";
 import ServerlessLogs from "@/components/sysadmin/monitoring/ServerlessLogs";
 import DatabaseTablesIntegrity from "@/components/sysadmin/monitoring/DatabaseTablesIntegrity";
 
+function MonitoringLoadingSkeleton() {
+  return (
+    <div className="space-y-6 animate-pulse">
+      {/* 1. Skeleton Header */}
+      <div className="bg-slate-200 h-[100px] p-6 rounded-2xl   flex flex-col sm:flex-row sm:items-center justify-between gap-4"></div>
+
+      {/* 2. Skeleton Kartu Metrik Utama (4 Grid) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="h-28 bg-slate-200 rounded-2xl "></div>
+        ))}
+      </div>
+
+      {/* 3. Skeleton Grafik Latensi */}
+      <div className="h-72 bg-slate-200 rounded-2xlp-6 space-y-4"></div>
+    </div>
+  );
+}
+
 export default function SystemMonitoringPage() {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState(null);
@@ -32,6 +51,11 @@ export default function SystemMonitoringPage() {
   useEffect(() => {
     fetchHealthCheck();
   }, []);
+
+  // Tampilkan Skeleton saat pertama kali dimuat dan data belum ada
+  if (loading && !data) {
+    return <MonitoringLoadingSkeleton />;
+  }
 
   return (
     <div className="space-y-6">

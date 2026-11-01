@@ -40,7 +40,7 @@ export default function SysadminShell({ initialAdmin, children }) {
 
       <div className="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto">
         <AppTopbar
-          title="Panel Admin"
+          title="Modul Sistem Admin"
           description="Pusat kendali akun pengguna dan pemantauan infrastruktur sistem"
           onToggleSidebar={toggleSidebar}
           userName={initialAdmin.username}

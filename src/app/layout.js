@@ -8,12 +8,6 @@ const outfit = Outfit({
   display: "swap",
 });
 
-export const metadata = {
-  title: "Panel Admin | Dashboard",
-  description:
-    "Sistem Informasi Kampung Palahanaeng | Manajemen Pengguna & Monitoring Sistem",
-};
-
 export default function RootLayout({ children }) {
   return (
     <html lang="id" className={outfit.variable}>
