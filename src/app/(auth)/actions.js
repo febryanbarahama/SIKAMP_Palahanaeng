@@ -11,6 +11,25 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY,
 );
 
+// Helper internal untuk mencatat audit log otomatis
+async function recordAuditLog({ username, role, actionType, details, status }) {
+  try {
+    await supabase.from("audit_logs").insert([
+      {
+        username: username || "anonymous",
+        role: role || "Guest",
+        action_type: actionType,
+        details: details,
+        ip_address: "127.0.0.1", // Server Action menangani IP secara aman di level proxy jika diperlukan
+        user_agent: "Next.js Server Action",
+        status: status || "success",
+      },
+    ]);
+  } catch (err) {
+    console.error("Gagal mencatat audit log login:", err.message);
+  }
+}
+
 export async function handleLogin(prevState, formData) {
   const username = formData.get("username");
   const password = formData.get("password");
@@ -42,11 +61,29 @@ export async function handleLogin(prevState, formData) {
       .single();
 
     if (error || !user) {
+      // Catat log gagal: Username tidak ditemukan
+      await recordAuditLog({
+        username: username,
+        role: "Unknown",
+        actionType: "login_failed",
+        details: `Upaya login gagal: Username '${username}' tidak ditemukan.`,
+        status: "failed",
+      });
+
       console.error("Login Query Error:", error);
       return { success: false, message: "Username tidak ditemukan." };
     }
 
     if (user.status !== "aktif") {
+      // Catat log gagal: Akun nonaktif
+      await recordAuditLog({
+        username: user.username,
+        role: user.roles?.nama_role || "User",
+        actionType: "login_failed",
+        details: `Upaya login ditolak: Akun dalam status nonaktif.`,
+        status: "failed",
+      });
+
       return {
         success: false,
         message: "Akun anda sedang nonaktif. Silahkan hubungi Administrator.",
@@ -56,6 +93,15 @@ export async function handleLogin(prevState, formData) {
     // 2. Verifikasi password dengan bcrypt
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
+      // Catat log gagal: Password salah
+      await recordAuditLog({
+        username: user.username,
+        role: user.roles?.nama_role || "User",
+        actionType: "login_failed",
+        details: `Upaya login gagal: Password salah untuk username '${username}'.`,
+        status: "failed",
+      });
+
       return { success: false, message: "Password anda salah." };
     }
 
@@ -64,6 +110,15 @@ export async function handleLogin(prevState, formData) {
       .from("users")
       .update({ last_login: new Date().toISOString() })
       .eq("id", user.id);
+
+    // Catat log sukses login
+    await recordAuditLog({
+      username: user.username,
+      role: user.roles?.nama_role || "Operator",
+      actionType: "login_success",
+      details: `Berhasil masuk ke dalam sistem dengan hak akses [${user.roles?.nama_role || "User"}]`,
+      status: "success",
+    });
 
     // 4. Siapkan data sesi untuk disimpan ke cookie
     const sessionData = {
@@ -109,9 +164,29 @@ export async function handleLogin(prevState, formData) {
   }
 }
 
-// 2. Fungsi Logout baru yang ditambahkan di file yang sama
+// 2. Fungsi Logout yang diperbarui dengan pencatatan audit log
 export async function handleLogout() {
-  const cookieStore = await cookies();
-  cookieStore.delete("sid_session");
-  redirect("/login"); // Sesuaikan dengan route halaman login kamu
+  try {
+    const cookieStore = await cookies();
+    const sessionCookie = cookieStore.get("sid_session");
+
+    if (sessionCookie) {
+      const sessionData = JSON.parse(sessionCookie.value);
+
+      // Catat log logout
+      await recordAuditLog({
+        username: sessionData.username || "unknown",
+        role: sessionData.namaRole || "User",
+        actionType: "logout",
+        details: `Pengguna keluar dari sesi sistem.`,
+        status: "success",
+      });
+    }
+
+    cookieStore.delete("sid_session");
+  } catch (err) {
+    console.error("Gagal mencatat audit log logout:", err);
+  }
+
+  redirect("/login");
 }
