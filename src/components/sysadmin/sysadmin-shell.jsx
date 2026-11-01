@@ -13,7 +13,11 @@ const sysadminNav = [
     href: "/sysadmin/manajemen-users",
     icon: Users,
   },
-  { name: "Monitoring System", href: "/sysadmin/monitoring", icon: Activity },
+  {
+    name: "Monitoring System",
+    href: "/sysadmin/monitoring-sistem",
+    icon: Activity,
+  },
   { name: "Log Aktivitas", href: "/sysadmin/logs", icon: FileText },
 ];
 
