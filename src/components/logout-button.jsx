@@ -8,8 +8,8 @@ export default function LogoutButton() {
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const onSubmitLogout = async (e) => {
-    e.preventDefault();
+  // Hapus parameter "e" karena ini dipanggil dari form action
+  const onSubmitLogout = async () => {
     setIsLoading(true);
     try {
       await handleLogout();

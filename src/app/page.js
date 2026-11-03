@@ -22,7 +22,8 @@ export default async function ModuleSwitcherPage() {
 
   let userSession = {
     username: "Perangkat Desa",
-    role: "Super Admin",
+    namaRole: "Super Admin",
+    roleId: null,
     avatarUrl: null,
   };
 
@@ -33,12 +34,14 @@ export default async function ModuleSwitcherPage() {
     console.error("Gagal parsing cookie sid_session:", e);
   }
 
-  const userRole = userSession?.role || "Super Admin";
+  const userRole = userSession?.namaRole || userSession?.role || "Super Admin";
+  const isSuperAdmin = userSession?.roleId === 1 || userRole === "Super Admin";
   const userName = userSession?.username || "Perangkat Desa";
   const userAvatar = userSession?.avatarUrl;
 
+  // Logika Pemeriksaan Akses Modul Berdasarkan Role
   const checkAccess = (module) => {
-    if (userRole === "Super Admin") return true;
+    if (isSuperAdmin) return true; // Super Admin memiliki hak akses penuh ke seluruh modul
     return module.requiredRoles.includes(userRole);
   };
 
@@ -123,12 +126,15 @@ export default async function ModuleSwitcherPage() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-1 w-full space-y-6">
         <div className="space-y-4">
           <div className="flex items-center justify-between px-2">
-            <h3 className="text-base font-bold text-[#0B1F4D]">
-              Daftar Modul Tersedia
-            </h3>
-            <span className="text-xs text-[#5C7192] font-medium">
-              Hak akses disesuaikan dengan profil akun Anda
-            </span>
+            <div>
+              <h3 className="text-base font-bold text-[#0B1F4D]">
+                Daftar Modul Tersedia
+              </h3>
+              <p className="text-xs text-[#5C7192] font-medium mt-0.5">
+                Hak akses disesuaikan dengan profil peran:{" "}
+                <span className="font-semibold text-[#2563EB]">{userRole}</span>
+              </p>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -143,7 +149,7 @@ export default async function ModuleSwitcherPage() {
         </div>
       </main>
 
-      {/* 4. Footer dengan Efek Glass Gray, Rounded Full, & Pemisah Vertikal */}
+      {/* 4. Footer dengan Efek Gradasi & Pemisah Vertikal */}
       <footer className="w-full pb-8 px-4 sm:px-6 lg:px-8 mt-auto">
         <div className="max-w-5xl mx-auto bg-gradient-to-r from-[#061A43] via-[#0B1F4D] to-[#123B8A] border-b border-[#123B8A]/80 shadow-md rounded-full py-3.5 px-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs">
           <div className="flex items-center gap-3 text-center md:text-left">
@@ -162,7 +168,7 @@ export default async function ModuleSwitcherPage() {
 
           <div className="text-center">
             <p className="font-bold text-white">Sistem Informasi Kampung</p>
-            <p className="text-[11px] text-[#2563EB] font-semibold">
+            <p className="text-[11px] text-[#38A5F5] font-semibold">
               SIKAMP v1.0.0
             </p>
           </div>
