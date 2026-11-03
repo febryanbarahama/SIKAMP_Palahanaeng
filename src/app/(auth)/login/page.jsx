@@ -274,7 +274,7 @@ export default function LoginPage() {
             <Button
               type="submit"
               suppressHydrationWarning
-              className="w-full h-12 mt-2 btn-primary-gradient text-white font-medium rounded-xl shadow-md shadow-blue-600/20 transition-all duration-300 ease-in-out cursor-pointer"
+              className="w-full h-12 mt-2  bg-gradient-to-r from-[#1D4ED8] to-[#25A4FF] text-white font-medium rounded-xl shadow-md shadow-blue-600/20 transition-all duration-300 ease-in-out cursor-pointer"
             >
               Masuk
             </Button>
