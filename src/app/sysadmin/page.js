@@ -3,7 +3,8 @@ import { Users, UserCheck, UserX, Shield } from "lucide-react";
 
 import { getActiveUsername, getDashboardData } from "@/service/sysadminService";
 
-import WelcomeBanner from "@/components/sysadmin/welcome-banner";
+// Impor dari komponen global
+import WelcomeBanner from "@/components/common/welcome-banner";
 import StatCard from "@/components/sysadmin/stat-card";
 import InfrastructureStatus from "@/components/sysadmin/infrastructure-status";
 import QuickActions from "@/components/sysadmin/quick-actions";
@@ -38,7 +39,13 @@ async function DashboardContent() {
 
   return (
     <div className="space-y-6">
-      <WelcomeBanner username={username} />
+      {/* Menggunakan WelcomeBanner Global dengan Properti Kustom Sysadmin */}
+      <WelcomeBanner
+        username={username}
+        badgeText="Pusat Kendali Administrator Sistem"
+        description="Kelola kredensial pengguna, pantau kesehatan infrastruktur database, dan tinjau audit keamanan Sistem Informasi Kampung Palahanaeng secara terpusat."
+        imageSrc="/ilustrasi_sysadmin.png"
+      />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard

@@ -3,8 +3,33 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { LogOut, AlertTriangle } from "lucide-react";
-import { handleLogout } from "@/app/(auth)/actions"; // Sesuaikan path import handleLogout Anda
+import {
+  LogOut,
+  AlertTriangle,
+  LayoutDashboard,
+  Users,
+  Building2,
+  Activity,
+  FileText,
+  Globe,
+  Landmark,
+  Wallet,
+  HardHat,
+} from "lucide-react";
+import { handleLogout } from "@/app/(auth)/actions";
+
+// Mapping string ikon dari server/layout ke komponen Lucide React yang sah
+const iconMap = {
+  LayoutDashboard,
+  Users,
+  Building2,
+  Activity,
+  FileText,
+  Globe,
+  Landmark,
+  Wallet,
+  HardHat,
+};
 
 export default function AppSidebar({
   isCollapsed,
@@ -32,7 +57,7 @@ export default function AppSidebar({
         }`}
       >
         {/* Brand / Logo Section */}
-        <div className="p-5 border-b border-[#123B8A]/60 flex items-center gap-3 overflow-hidden">
+        <div className="p-5 border-b border-[#123B8A]/60 flex items-center gap-3 overflow-hidden shrink-0">
           <div className="w-10 h-10 shrink-0 rounded-xl bg-surface/10 flex items-center justify-center border border-white/10 shadow-md overflow-hidden">
             <img
               src="/logo.png"
@@ -59,15 +84,16 @@ export default function AppSidebar({
           </div>
         </div>
 
-        {/* Navigation Menu */}
-        <div className="flex-1 py-6 px-3 space-y-2 overflow-y-auto overflow-x-hidden">
+        {/* Navigation Menu dengan Custom Sleek Scrollbar */}
+        <div className="flex-1 py-6 px-3 space-y-2 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-thumb-blue-500/30 scrollbar-track-transparent hover:scrollbar-thumb-blue-400/50">
           {!isCollapsed && (
             <p className="px-3 text-[10px] font-semibold tracking-wider text-blue-400 uppercase mb-2">
               Menu Utama
             </p>
           )}
           {navItems.map((item) => {
-            const Icon = item.icon;
+            // Ambil komponen ikon berdasarkan string iconName, fallback ke FileText jika tidak ditemukan
+            const IconComponent = iconMap[item.iconName] || FileText;
             const isActive = pathname === item.href;
 
             return (
@@ -82,7 +108,7 @@ export default function AppSidebar({
                     : "text-blue-100/70 hover:bg-[#123B8A]/60 hover:text-white"
                 }`}
               >
-                <Icon
+                <IconComponent
                   className={`w-5 h-5 shrink-0 ${isActive ? "text-white" : "text-blue-300 group-hover:text-white"}`}
                 />
                 <span
@@ -98,7 +124,7 @@ export default function AppSidebar({
         </div>
 
         {/* Footer / User Identity & Logout Card */}
-        <div className="p-3 border-t border-[#123B8A]/60 bg-[#07132e]/50">
+        <div className="p-3 border-t border-[#123B8A]/60 bg-[#07132e]/50 shrink-0">
           <div className="bg-[#123B8A]/40 border border-[#123B8A] rounded-xl p-3 flex items-center justify-between gap-3 overflow-hidden shadow-inner">
             <div className="flex items-center gap-3 overflow-hidden">
               <div className="w-9 h-9 shrink-0 rounded-full bg-primary-blue/30 text-blue-200 flex items-center justify-center font-bold text-xs border border-blue-400/30 shadow-inner">

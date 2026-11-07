@@ -28,7 +28,7 @@ export default function WelcomeBanner({ username }) {
           <div className="absolute w-40 h-40 bg-[#60A5FA]/20 rounded-full blur-2xl pointer-events-none"></div>
 
           <Image
-            src="/ilustrasi3D.png"
+            src="/ilustrasi_sysadmin.png"
             alt="Ilustrasi Administrator"
             fill
             sizes="(max-width: 768px) 100vw, 320px"

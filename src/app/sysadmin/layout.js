@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { connection } from "next/server";
-import SysadminShell from "@/components/sysadmin/sysadmin-shell";
+import AppShell from "@/components/layout/app-shell";
 
 export const instant = false;
 
@@ -10,6 +10,22 @@ export const metadata = {
     "Sistem Informasi Kampung Palahanaeng | Manajemen Pengguna & Monitoring Sistem",
 };
 
+// Daftar Navigasi Khusus Sysadmin menggunakan string iconName
+const sysadminNav = [
+  { name: "Dashboard", href: "/sysadmin", iconName: "LayoutDashboard" },
+  {
+    name: "Manajemen Pengguna",
+    href: "/sysadmin/manajemen-users",
+    iconName: "Users",
+  },
+  {
+    name: "Monitoring System",
+    href: "/sysadmin/monitoring-sistem",
+    iconName: "Activity",
+  },
+  { name: "Log Aktivitas", href: "/sysadmin/logs", iconName: "FileText" },
+];
+
 export default async function SysadminLayout({ children }) {
   await connection();
 
@@ -18,7 +34,7 @@ export default async function SysadminLayout({ children }) {
 
   let adminData = {
     username: "Super Admin",
-    roleName: "Sysadmin",
+    roleName: "Super Admin",
   };
 
   if (sessionCookie) {
@@ -28,7 +44,8 @@ export default async function SysadminLayout({ children }) {
       if (parsedSession) {
         adminData = {
           username: parsedSession.username || "Super Admin",
-          roleName: parsedSession.namaRole || "Sysadmin",
+          roleName:
+            parsedSession.namaRole || parsedSession.role || "Super Admin",
         };
       }
     } catch (e) {
@@ -36,5 +53,16 @@ export default async function SysadminLayout({ children }) {
     }
   }
 
-  return <SysadminShell initialAdmin={adminData}>{children}</SysadminShell>;
+  return (
+    <AppShell
+      initialUser={adminData}
+      navItems={sysadminNav}
+      brandTitle="Panel Admin"
+      brandSubtitle="SID Palahanaeng"
+      topbarTitle="Modul Sistem Admin"
+      topbarDescription="Pusat kendali akun pengguna dan pemantauan infrastruktur sistem"
+    >
+      {children}
+    </AppShell>
+  );
 }
