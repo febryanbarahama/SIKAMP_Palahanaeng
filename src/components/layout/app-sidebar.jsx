@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   LogOut,
   AlertTriangle,
@@ -15,6 +15,7 @@ import {
   Landmark,
   Wallet,
   HardHat,
+  ChevronDown,
 } from "lucide-react";
 import { handleLogout } from "@/app/(auth)/actions";
 
@@ -41,8 +42,37 @@ export default function AppSidebar({
   const pathname = usePathname();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
-  const handleNavClick = (e, href) => {
-    // Jika sidebar sedang tertutup (icon-only), klik pertama hanya membuka sidebar
+  // State untuk melacak menu dropdown yang sedang terbuka
+  const [openDropdowns, setOpenDropdowns] = useState({});
+
+  // Otomatis buka dropdown jika salah satu sub-menu aktif berdasarkan URL saat ini
+  useEffect(() => {
+    const newOpenState = {};
+    navItems.forEach((item) => {
+      if (item.children) {
+        const isChildActive = item.children.some(
+          (child) => pathname === child.href,
+        );
+        if (isChildActive) {
+          newOpenState[item.name] = true;
+        }
+      }
+    });
+    setOpenDropdowns((prev) => ({ ...prev, ...newOpenState }));
+  }, [pathname, navItems]);
+
+  const toggleDropdown = (name) => {
+    if (isCollapsed) {
+      if (onToggle) onToggle(); // Buka sidebar jika diklik saat mode icon-only
+      return;
+    }
+    setOpenDropdowns((prev) => ({
+      ...prev,
+      [name]: !prev[name],
+    }));
+  };
+
+  const handleNavClick = (e, href, hasChildren) => {
     if (isCollapsed) {
       e.preventDefault();
       if (onToggle) onToggle();
@@ -92,33 +122,94 @@ export default function AppSidebar({
             </p>
           )}
           {navItems.map((item) => {
-            // Ambil komponen ikon berdasarkan string iconName, fallback ke FileText jika tidak ditemukan
             const IconComponent = iconMap[item.iconName] || FileText;
-            const isActive = pathname === item.href;
+            const hasChildren = item.children && item.children.length > 0;
+            const isItemActive =
+              pathname === item.href ||
+              (hasChildren && item.children.some((c) => pathname === c.href));
+            const isOpen = openDropdowns[item.name];
 
             return (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={(e) => handleNavClick(e, item.href)}
-                title={isCollapsed ? item.name : undefined}
-                className={`flex items-center gap-3.5 px-3.5 py-3 rounded-xl text-sm font-medium transition-all group relative ${
-                  isActive
-                    ? "bg-gradient text-white shadow-lg shadow-blue-950/40"
-                    : "text-blue-100/70 hover:bg-[#123B8A]/60 hover:text-white"
-                }`}
-              >
-                <IconComponent
-                  className={`w-5 h-5 shrink-0 ${isActive ? "text-white" : "text-blue-300 group-hover:text-white"}`}
-                />
-                <span
-                  className={`transition-all duration-300 whitespace-nowrap overflow-hidden ${
-                    isCollapsed ? "opacity-0 w-0 hidden" : "opacity-100"
-                  }`}
-                >
-                  {item.name}
-                </span>
-              </Link>
+              <div key={item.name} className="space-y-1">
+                {hasChildren ? (
+                  // Tombol Dropdown Parent
+                  <button
+                    type="button"
+                    onClick={() => toggleDropdown(item.name)}
+                    title={isCollapsed ? item.name : undefined}
+                    className={`w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-sm font-medium transition-all group relative cursor-pointer ${
+                      isItemActive
+                        ? "bg-gradient text-white shadow-lg shadow-blue-950/40"
+                        : "text-blue-100/70 hover:bg-[#123B8A]/60 hover:text-white"
+                    }`}
+                  >
+                    <div className="flex items-center gap-3.5 overflow-hidden">
+                      <IconComponent
+                        className={`w-5 h-5 shrink-0 ${isItemActive ? "text-white" : "text-blue-300 group-hover:text-white"}`}
+                      />
+                      <span
+                        className={`transition-all duration-300 whitespace-nowrap overflow-hidden text-left ${
+                          isCollapsed ? "opacity-0 w-0 hidden" : "opacity-100"
+                        }`}
+                      >
+                        {item.name}
+                      </span>
+                    </div>
+                    {!isCollapsed && (
+                      <ChevronDown
+                        className={`w-4 h-4 shrink-0 transition-transform duration-200 ${
+                          isOpen ? "rotate-180" : ""
+                        }`}
+                      />
+                    )}
+                  </button>
+                ) : (
+                  // Link Tunggal Biasa
+                  <Link
+                    href={item.href}
+                    onClick={(e) => handleNavClick(e, item.href)}
+                    title={isCollapsed ? item.name : undefined}
+                    className={`flex items-center gap-3.5 px-3.5 py-3 rounded-xl text-sm font-medium transition-all group relative ${
+                      isItemActive
+                        ? "bg-gradient text-white shadow-lg shadow-blue-950/40"
+                        : "text-blue-100/70 hover:bg-[#123B8A]/60 hover:text-white"
+                    }`}
+                  >
+                    <IconComponent
+                      className={`w-5 h-5 shrink-0 ${isItemActive ? "text-white" : "text-blue-300 group-hover:text-white"}`}
+                    />
+                    <span
+                      className={`transition-all duration-300 whitespace-nowrap overflow-hidden ${
+                        isCollapsed ? "opacity-0 w-0 hidden" : "opacity-100"
+                      }`}
+                    >
+                      {item.name}
+                    </span>
+                  </Link>
+                )}
+
+                {/* Sub-menu Dropdown List */}
+                {hasChildren && isOpen && !isCollapsed && (
+                  <div className="pl-4 pr-2 space-y-1 py-1 border-l border-blue-500/20 ml-5 my-1">
+                    {item.children.map((child) => {
+                      const isChildActive = pathname === child.href;
+                      return (
+                        <Link
+                          key={child.href}
+                          href={child.href}
+                          className={`block px-3 py-2 rounded-lg text-xs font-medium transition-all ${
+                            isChildActive
+                              ? "bg-blue-600/40 text-white font-semibold shadow-sm"
+                              : "text-blue-200/60 hover:text-white hover:bg-blue-900/30"
+                          }`}
+                        >
+                          {child.name}
+                        </Link>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
             );
           })}
         </div>

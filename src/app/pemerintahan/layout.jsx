@@ -12,14 +12,25 @@ const pemerintahanNav = [
     iconName: "LayoutDashboard",
   },
   {
+    name: "Profil Kampung",
+    href: "/pemerintahan/profil", // Bisa jadi parent link atau path utama
+    iconName: "Landmark",
+    children: [
+      {
+        name: "Info Kampung",
+        href: "/pemerintahan/profil_kampung/info_kampung",
+      },
+      {
+        name: "Pemerintahan Kampung",
+        href: "/pemerintahan/pemerintahan-kampung",
+      },
+      { name: "Wilayah Administrasi", href: "/pemerintahan/wilayah" },
+    ],
+  },
+  {
     name: "Kependudukan",
     href: "/pemerintahan/kependudukan",
     iconName: "Users",
-  },
-  {
-    name: "Profil Kampung",
-    href: "/pemerintahan/profil",
-    iconName: "Landmark",
   },
   {
     name: "Hukum & Regulasi",
@@ -39,7 +50,7 @@ const pemerintahanNav = [
   {
     name: "Kelembagaan",
     href: "/pemerintahan/kelembagaan",
-    iconName: "Building2",
+    iconName: "Users",
   },
 ];
 
