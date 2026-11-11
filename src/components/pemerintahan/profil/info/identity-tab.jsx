@@ -41,7 +41,7 @@ export default function IdentityTab({ formData, handleChange }) {
             onChange={handleChange}
             className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-[#155EEF] bg-white"
           >
-            <option value="Lindongan">Lindongan[cite: 1]</option>
+            <option value="Lindongan">Lindongan</option>
             <option value="Dusun">Dusun</option>
             <option value="Kampung">Kampung</option>
           </select>
@@ -104,6 +104,34 @@ export default function IdentityTab({ formData, handleChange }) {
           />
         </div>
 
+        <div className="space-y-1.5 sm:col-span-2">
+          <label className="text-xs font-bold text-slate-700">
+            Email Resmi Desa
+          </label>
+          <input
+            type="email"
+            name="email_desa"
+            value={formData.email_desa}
+            onChange={handleChange}
+            className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-[#155EEF]"
+          />
+        </div>
+
+        {/* Field Alamat Kantor Desa */}
+        <div className="space-y-1.5 sm:col-span-2">
+          <label className="text-xs font-bold text-slate-700">
+            Alamat Kantor Desa
+          </label>
+          <textarea
+            name="alamat_kantor"
+            rows={3}
+            value={formData.alamat_kantor}
+            onChange={handleChange}
+            placeholder="Masukkan alamat lengkap kantor desa..."
+            className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-[#155EEF]"
+          />
+        </div>
+
         <div className="space-y-1.5">
           <label className="text-xs font-bold text-slate-700">
             URL Facebook
@@ -130,18 +158,7 @@ export default function IdentityTab({ formData, handleChange }) {
           />
         </div>
 
-        <div className="sm:col-span-2 space-y-1.5">
-          <label className="text-xs font-bold text-slate-700">
-            Email Resmi Desa
-          </label>
-          <input
-            type="email"
-            name="email_desa"
-            value={formData.email_desa}
-            onChange={handleChange}
-            className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-[#155EEF]"
-          />
-
+        <div className="space-y-1.5 sm:col-span-2">
           <label className="text-xs font-bold text-slate-700">
             URL YouTube
           </label>

@@ -94,14 +94,15 @@ export default function EditInfoKampungPage() {
         text: "Perubahan Info Kampung berhasil disimpan!",
       });
 
-      // Mengarahkan kembali ke Beranda Info Kampung setelah berhasil
+      // Optimasi: Matikan loading, kosongkan pesan, refresh router, lalu pindah halaman
       setTimeout(() => {
-        router.push("/pemerintahan/profil_kampung/info_kampung");
+        setSaving(false);
+        setMessage({ type: "", text: "" }); // Reset pesan sukses agar bersih saat kembali
         router.refresh();
-      }, 1200);
+        router.push("/pemerintahan/profil_kampung/info_kampung");
+      }, 1000);
     } catch (err) {
       setMessage({ type: "error", text: `Gagal menyimpan: ${err.message}` });
-    } finally {
       setSaving(false);
     }
   };

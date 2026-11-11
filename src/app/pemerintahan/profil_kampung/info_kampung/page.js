@@ -11,6 +11,7 @@ import {
   Compass,
   BookOpen,
 } from "lucide-react";
+import AppFooter from "@/components/layout/app-footer";
 
 export default function InfoKampungPage() {
   const [profil, setProfil] = useState({});
@@ -41,10 +42,28 @@ export default function InfoKampungPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <p className="text-sm font-semibold text-slate-500 animate-pulse">
-          Memuat Info Kampung...
-        </p>
+      <div className="px-4 sm:px-9 py-6 space-y-8 animate-pulse">
+        {/* Header & Breadcrumb Skeleton */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 py-2 border-b border-slate-200 pb-4">
+          <div className="space-y-2">
+            <div className="w-48 h-3 bg-slate-200 rounded-full"></div>
+            <div className="w-64 h-7 bg-slate-200 rounded-xl mt-4"></div>
+            <div className="w-80 h-3 bg-slate-200 rounded-full"></div>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="w-24 h-10 bg-slate-200 rounded-xl"></div>
+            <div className="w-32 h-10 bg-slate-200 rounded-xl"></div>
+          </div>
+        </div>
+
+        {/* Hero Section Skeleton */}
+        <div className="w-full h-[300px] bg-slate-200 rounded-3xl"></div>
+
+        {/* Main Content Skeleton Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-1 h-80 bg-slate-200 rounded-3xl"></div>
+          <div className="lg:col-span-2 h-80 bg-slate-200 rounded-3xl"></div>
+        </div>
       </div>
     );
   }
@@ -52,18 +71,21 @@ export default function InfoKampungPage() {
   return (
     <div>
       {/* 1. Executive Hero Banner (Full-Width) */}
-      <div className="relative overflow-hidden flex flex-col justify-center bg-[#0B1F4D] text-white shadow-xl border-b border-[#123B8A]/80 w-full h-[300px] mb-8">
+      <div className="relative overflow-hidden flex flex-col justify-center bg-slate-900 text-white shadow-xl  border border-slate-200/20 w-full min-h-[300px] mb-8">
+        {/* Foto Kantor Jelas di Latar Belakang */}
         <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-gradient-to-r from-[#0B1F4D] via-[#0B1F4D]/90 to-transparent z-10" />
           <img
             src={profil.foto_kantor || "/ilustrasi_sysadmin.png"}
             alt="Kantor Kampung"
-            className="w-full h-full object-cover opacity-30"
+            className="w-full h-full object-cover object-center"
           />
+          {/* Gradien gelap halus di sisi kiri untuk kontras teks, sisi kanan dibiarkan jernih */}
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-950/95 via-slate-950/75 sm:via-slate-950/60 to-transparent z-10" />
         </div>
 
+        {/* Konten Utama */}
         <div className="relative z-20 p-6 sm:p-8 md:p-10 flex flex-col md:flex-row md:items-center justify-between gap-6 max-w-7xl mx-auto w-full">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5 max-w-2xl">
             <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-white/10 backdrop-blur-md border-2 border-white/20 p-2 shadow-lg flex items-center justify-center shrink-0">
               <img
                 src={profil.logo_desa || "/logo.png"}
@@ -74,39 +96,40 @@ export default function InfoKampungPage() {
 
             <div className="space-y-2">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/30 text-[11px] font-semibold backdrop-blur-md">
+                <span className="px-3 py-1 rounded-full bg-blue-500/30 text-blue-200 border border-blue-400/30 text-[11px] font-semibold backdrop-blur-md">
                   Kode: {profil.kode_desa || "-"}
                 </span>
-                <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-[11px] font-semibold backdrop-blur-md">
+                <span className="px-3 py-1 rounded-full bg-emerald-500/30 text-emerald-200 border border-emerald-400/30 text-[11px] font-semibold backdrop-blur-md">
                   Wilayah Bawahan:{" "}
                   {profil.sebutan_wilayah_bawahan || "Lindongan"}
                 </span>
               </div>
 
-              <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
+              <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white drop-shadow-md">
                 {profil.nama_desa || "Nama Kampung Belum Diatur"}
               </h2>
 
-              <p className="text-xs sm:text-sm text-blue-200 font-medium">
+              <p className="text-xs sm:text-sm text-slate-200 font-medium drop-shadow-sm">
                 Kecamatan {profil.kecamatan || "-"}, Kabupaten{" "}
                 {profil.kabupaten || "-"}, Provinsi {profil.provinsi || "-"}
               </p>
             </div>
           </div>
 
-          <div className="bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl p-4 space-y-2.5 min-w-[260px] text-xs">
-            <div className="flex items-center gap-2.5 text-blue-100">
-              <Mail className="w-4 h-4 text-blue-400 shrink-0" />
+          {/* Kontak Card: Efek Kaca Transparan Jernih (Crystal Glass) */}
+          <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-4 space-y-2.5 min-w-[260px] text-xs shadow-xl text-white">
+            <div className="flex items-center gap-2.5">
+              <Mail className="w-4 h-4 text-blue-300 shrink-0" />
               <span className="truncate">
                 {profil.email_desa || "Email belum diatur"}
               </span>
             </div>
-            <div className="flex items-center gap-2.5 text-blue-100">
-              <Phone className="w-4 h-4 text-emerald-400 shrink-0" />
+            <div className="flex items-center gap-2.5">
+              <Phone className="w-4 h-4 text-emerald-300 shrink-0" />
               <span>{profil.telepon_desa || "Telepon belum diatur"}</span>
             </div>
-            <div className="flex items-start gap-2.5 text-blue-100">
-              <MapPin className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+            <div className="flex items-start gap-2.5">
+              <MapPin className="w-4 h-4 text-amber-300 shrink-0 mt-0.5" />
               <span className="leading-relaxed">
                 {profil.alamat_kantor || "Alamat kantor belum diatur"}
               </span>
@@ -446,6 +469,8 @@ export default function InfoKampungPage() {
           </div>
         </div>
       </div>
+
+      <AppFooter />
     </div>
   );
 }

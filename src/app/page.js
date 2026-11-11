@@ -6,6 +6,7 @@ import { LogOut, MapPin } from "lucide-react";
 import { handleLogout } from "@/app/(auth)/actions";
 import { DynamicYear } from "@/components/dynamic-year";
 import LogoutButton from "@/components/logout-button";
+import AppFooter from "@/components/layout/app-footer";
 
 // Mengizinkan rute blocking untuk pembacaan cookies di server
 export const instant = false;
@@ -150,7 +151,8 @@ export default async function ModuleSwitcherPage() {
       </main>
 
       {/* 4. Footer dengan Efek Gradasi & Pemisah Vertikal */}
-      <footer className="w-full pb-8 px-4 sm:px-6 lg:px-8 mt-auto">
+
+      {/* <footer className="w-full pb-8 px-4 sm:px-6 lg:px-8 mt-auto">
         <div className="max-w-5xl mx-auto bg-gradient-to-r from-[#061A43] via-[#0B1F4D] to-[#123B8A] border-b border-[#123B8A]/80 shadow-md rounded-full py-3.5 px-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs">
           <div className="flex items-center gap-3 text-center md:text-left">
             <div className="w-8 h-8 rounded-full bg-[#2563EB]/15 text-[#2563EB] flex items-center justify-center shrink-0 border border-[#2563EB]/25">
@@ -179,7 +181,9 @@ export default async function ModuleSwitcherPage() {
             <DynamicYear />
           </div>
         </div>
-      </footer>
+      </footer> */}
+
+      <AppFooter />
     </div>
   );
 }
