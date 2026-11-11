@@ -11,7 +11,6 @@ import {
   Compass,
   BookOpen,
 } from "lucide-react";
-import { supabaseAdmin } from "@/lib/supabase";
 
 export default function InfoKampungPage() {
   const [profil, setProfil] = useState({});
@@ -21,16 +20,14 @@ export default function InfoKampungPage() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const { data, error } = await supabaseAdmin
-          .from("profil_desa")
-          .select("*")
-          .eq("id", 1)
-          .maybeSingle();
+        // Mengambil data melalui API Route server-side yang sudah Anda buat
+        const res = await fetch("/api/pemerintahan/profil/info");
+        const json = await res.json();
 
-        if (error) {
-          console.error("Gagal memuat profil desa:", error.message);
-        } else if (data) {
-          setProfil(data);
+        if (json.success && json.data) {
+          setProfil(json.data);
+        } else {
+          console.error("Gagal memuat profil desa:", json.message);
         }
       } catch (err) {
         console.error("Exception saat mengambil profil desa:", err);
@@ -132,7 +129,7 @@ export default function InfoKampungPage() {
           </div>
 
           <Link
-            href="/pemerintahan/profil_kampung/edit"
+            href="/pemerintahan/profil_kampung/info_kampung/edit"
             className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#155EEF] hover:bg-blue-700 text-white text-xs font-semibold shadow-sm transition-all cursor-pointer self-start sm:self-auto"
           >
             <Edit3 className="w-4 h-4" />
